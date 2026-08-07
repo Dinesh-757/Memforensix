@@ -1,0 +1,87 @@
+version: "3.9"
+
+x-backend-env: &backend-env
+  ENVIRONMENT: development
+  DEBUG: "true"
+  SECRET_KEY: ${SECRET_KEY:-dev_secret_change_me_please_use_openssl_rand_hex_32}
+  POSTGRES_USER: ${POSTGRES_USER:-memforensix}
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-memforensix_pass}
+  POSTGRES_DB: ${POSTGRES_DB:-memforensix}
+  POSTGRES_HOST: postgres
+  POSTGRES_PORT: 5432
+  REDIS_HOST: redis
+  REDIS_PORT: 6379
+  UPLOAD_DIR: /data/uploads
+  YARA_RULES_DIR: /app/yara_rules
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-memforensix}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-memforensix_pass}
+      POSTGRES_DB: ${POSTGRES_DB:-memforensix}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-memforensix}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    environment: *backend-env
+    volumes:
+      - uploads_data:/data/uploads
+      - ./backend/yara_rules:/app/yara_rules:ro
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: >
+      sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+
+  celery_worker:
+    build: ./backend
+    restart: unless-stopped
+    environment: *backend-env
+    volumes:
+      - uploads_data:/data/uploads
+      - ./backend/yara_rules:/app/yara_rules:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: celery -A app.workers.celery_app worker --loglevel=info --concurrency=2
+
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+  uploads_data:
