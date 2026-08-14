@@ -50,7 +50,7 @@ This project wires up **real** Volatility 3 and YARA execution paths. However:
 ## Quick Start
 
 ```bash
-git clone <your-repo-url> memforensix
+git clone https://github.com/Dinesh-757/Memforensix.git
 cd memforensix
 cp .env.example .env
 cp backend/.env.example backend/.env
