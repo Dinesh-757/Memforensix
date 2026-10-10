@@ -1,10 +1,23 @@
+<div align="center">
+
+<a href="https://github.com/Dinesh-757"><img src="https://raw.githubusercontent.com/Dinesh-757/Dinesh-757/main/assets/operation-memforensix.svg" alt="Memforensix in the electric-blue and violet cybersecurity project series" width="100%" /></a>
+
+<img src="https://img.shields.io/badge/DOMAIN-MEMORY%20ANALYSIS-4f46e5?style=for-the-badge&labelColor=0b1027" alt="DIGITAL FORENSICS" />
+<a href="https://github.com/Dinesh-757"><img src="https://img.shields.io/badge/CREATOR-DILLI%20DINESH-111936?style=for-the-badge&labelColor=0b1027" alt="Creator Dilli Dinesh" /></a>
+
+[GitHub profile](https://github.com/Dinesh-757) · [Portfolio](https://dinesh-757.github.io/) · [Project dossiers](https://github.com/Dinesh-757/Dinesh-757/blob/main/PROJECT_SHOWCASE.md)
+
+</div>
+
 # MEMFORENSIX
 
-**Digital Forensics Platform for Memory Dump Analysis**
+**Memory forensics workbench — Volatility 3 • YARA • anomaly detection**
 
 MEMFORENSIX is a full-stack forensics tool that ingests memory dump images (RAW, DMP, ELF, Mach-O), extracts process and network artifacts via Volatility 3, scans them against YARA malware-indicator rules, runs unsupervised ML anomaly detection, and presents results in an interactive red/black-themed dashboard with real-time progress over WebSockets.
 
 Built as a final-year project demonstrating full-stack + security engineering: FastAPI, Celery, PostgreSQL, Redis, React/TypeScript, Docker, and CI/CD.
+
+> **Evidence boundary:** The bundled demo input is synthetic and can trigger a documented fallback dataset. It is **not** a substitute for parsing and validating a genuine memory capture. Details are in [Important: about the forensics in this demo](#important-about-the-forensics-in-this-demo).
 
 ## Architecture
 
@@ -102,3 +115,7 @@ memforensix/
 ## License
 
 MIT — see [LICENSE](LICENSE).
+
+---
+
+<sub>Part of the [Dilli Dinesh cybersecurity project collection](https://github.com/Dinesh-757). All testing must be authorized. Documentation describes scope and known limitations, not an independent security certification.</sub>
